@@ -1,5 +1,6 @@
-import Navbar from "@/components/layout/Navbar";
 import Dashboard from "@/components/Dashboard";
+import Hero from "@/components/layout/Hero";
+import Navbar from "@/components/layout/Navbar";
 import { getProducts } from "@/services/api";
 
 export default async function Home() {
@@ -9,7 +10,9 @@ export default async function Home() {
     <>
       <Navbar />
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      {/* <Hero /> */}
+
+      <main className="mx-auto mt-6 max-w-[1500px] px-8 pb-12">
         <Dashboard products={data.products} />
       </main>
     </>

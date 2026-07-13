@@ -3,7 +3,6 @@
 import {
   createContext,
   useContext,
-  useEffect,
   useState,
   ReactNode,
 } from "react";
@@ -21,15 +20,16 @@ export function FavoriteProvider({
 }: {
   children: ReactNode;
 }) {
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<number[]>(() => {
+  if (typeof window === "undefined") {
+    return [];
+  }
 
-  useEffect(() => {
-    const stored = localStorage.getItem("favorites");
+  const stored = localStorage.getItem("favorites");
 
-    if (stored) {
-      setFavorites(JSON.parse(stored));
-    }
-  }, []);
+  return stored ? JSON.parse(stored) : [];
+});
+  
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) => {

@@ -7,13 +7,22 @@ interface Props {
 
 export default function ProductGrid({ products }: Props) {
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <section
+      className="
+        grid
+        auto-rows-fr
+        gap-8
+        sm:grid-cols-2
+        xl:grid-cols-3
+        2xl:grid-cols-4
+      "
+    >
       {products.map((product) => (
         <ProductCard
           key={product.id}
           product={product}
         />
       ))}
-    </div>
+    </section>
   );
 }
