@@ -1,5 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
-import ProductGrid from "@/components/product/ProductGrid";
+import Dashboard from "@/components/Dashboard";
 import { getProducts } from "@/services/api";
 
 export default async function Home() {
@@ -10,7 +10,7 @@ export default async function Home() {
       <Navbar />
 
       <main className="mx-auto max-w-7xl px-6 py-8">
-        <ProductGrid products={data.products} />
+        <Dashboard products={data.products} />
       </main>
     </>
   );
