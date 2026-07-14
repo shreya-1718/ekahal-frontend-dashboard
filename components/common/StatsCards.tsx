@@ -50,7 +50,7 @@ export default function StatsCards({
   };
 
   return (
-    <div className="mb-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="mb-4 grid grid-cols-2 gap-4 xl:grid-cols-4">
       {cards.map((card) => {
         const Icon = card.icon;
 
@@ -61,15 +61,15 @@ export default function StatsCards({
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">{card.title}</p>
+                <p className="text-xs md:text-sm text-gray-500">{card.title}</p>
 
-                <h2 className="mt-2 text-3xl font-bold">
+                <h2 className="mt-2 text-2xl md:text-3xl font-bold">
                   {values[card.key as keyof typeof values]}
                 </h2>
               </div>
 
               <div
-                className={`rounded-2xl bg-gradient-to-r ${card.gradient} p-4 text-white shadow-lg`}
+                className={`rounded-2xl bg-gradient-to-r hidden md:block ${card.gradient} p-4 text-white shadow-lg`}
               >
                 <Icon size={24} />
               </div>

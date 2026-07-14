@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Grid3X3, Heart } from "lucide-react";
+import {
+  Grid3X3,
+  Heart,
+} from "lucide-react";
 
 import { Product } from "@/types/product";
 import { useFavorites } from "@/context/FavoriteContext";
@@ -32,36 +35,46 @@ export default function Dashboard({ products }: DashboardProps) {
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const hasFilters = search || category !== "All" || showFavorites;
 
   const scrolled = useScrolled();
   const { favorites } = useFavorites();
 
+  const hasFilters =
+    search ||
+    category !== "All" ||
+    showFavorites;
+
   const categories = useMemo(() => {
-    return ["All", ...new Set(products.map((product) => product.category))];
+    return [
+      "All",
+      ...new Set(products.map((p) => p.category)),
+    ];
   }, [products]);
 
   const filteredProducts = useMemo(() => {
     let data = [...products];
 
-    // Search
     if (search.trim()) {
       data = data.filter((product) =>
-        product.title.toLowerCase().includes(search.toLowerCase()),
+        product.title
+          .toLowerCase()
+          .includes(search.toLowerCase())
       );
     }
 
-    // Category
     if (category !== "All") {
-      data = data.filter((product) => product.category === category);
+      data = data.filter(
+        (product) =>
+          product.category === category
+      );
     }
 
-    // Favorites
     if (showFavorites) {
-      data = data.filter((product) => favorites.includes(product.id));
+      data = data.filter((product) =>
+        favorites.includes(product.id)
+      );
     }
 
-    // Sorting
     switch (sortBy) {
       case "price-low":
         data.sort((a, b) => a.price - b.price);
@@ -76,30 +89,32 @@ export default function Dashboard({ products }: DashboardProps) {
         break;
 
       case "name-asc":
-        data.sort((a, b) => a.title.localeCompare(b.title));
+        data.sort((a, b) =>
+          a.title.localeCompare(b.title)
+        );
         break;
 
       case "name-desc":
-        data.sort((a, b) => b.title.localeCompare(a.title));
-        break;
-
-      default:
+        data.sort((a, b) =>
+          b.title.localeCompare(a.title)
+        );
         break;
     }
 
     return data;
-  }, [products, search, category, showFavorites, favorites, sortBy]);
+  }, [
+    products,
+    favorites,
+    search,
+    category,
+    showFavorites,
+    sortBy,
+  ]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, category, showFavorites, sortBy]);
 
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
-
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE,
-  );
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -108,6 +123,18 @@ export default function Dashboard({ products }: DashboardProps) {
     return () => clearTimeout(timer);
   }, []);
 
+  const totalPages = Math.ceil(
+    filteredProducts.length / PRODUCTS_PER_PAGE
+  );
+
+  const paginatedProducts =
+    filteredProducts.slice(
+      (currentPage - 1) *
+        PRODUCTS_PER_PAGE,
+      currentPage *
+        PRODUCTS_PER_PAGE
+    );
+
   return (
     <>
       <StatsCards
@@ -115,30 +142,27 @@ export default function Dashboard({ products }: DashboardProps) {
         favoriteCount={favorites.length}
         totalCategories={categories.length - 1}
         averageRating={
-          products.reduce((sum, p) => sum + p.rating, 0) / products.length
+          products.reduce(
+            (sum, p) => sum + p.rating,
+            0
+          ) / products.length
         }
       />
-      <div
-        className={`
-    sticky
-    top-20
-    z-40
-    mb-10
-    rounded-3xl
-    transition-all
-    duration-300
 
-    ${
-      scrolled
-        ? "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 backdrop-blur-2xl shadow-2xl border border-gray-200 py-4 px-6"
-        : "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 backdrop-blur-xl shadow-xl border border-white/50 p-4"
-    }
-  `}
+      <div
+        className={`sticky top-16 md:top-20 z-40 mb-8 rounded-3xl transition-all duration-300 ${
+          scrolled
+            ? "border border-gray-200 bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 px-4 py-4 shadow-2xl backdrop-blur-xl md:px-6"
+            : "border border-white/50 bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 p-4 shadow-xl backdrop-blur-xl md:p-6"
+        }`}
       >
         {/* Top Controls */}
 
-        <div className="grid gap-5 lg:grid-cols-[1fr_250px_auto]">
-          <SearchBar value={search} onChange={setSearch} />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-[1fr_260px_auto]">
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+          />
 
           <CategoryFilter
             categories={categories}
@@ -146,91 +170,109 @@ export default function Dashboard({ products }: DashboardProps) {
             onChange={setCategory}
           />
 
-          {/* Favorite Toggle */}
+          <div className="flex items-center justify-between rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 md:justify-center md:gap-3">
+            <div className="flex items-center gap-2">
+              <Heart
+                size={18}
+                className={`${
+                  showFavorites ? "fill-red-500 text-red-500" : "text-gray-400"
+                }`}
+              />
 
-          <div className="flex items-center justify-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-5">
-            <Heart
-              size={18}
-              className={`transition-all duration-300 ${
-                showFavorites ? "fill-red-500 text-red-500" : "text-gray-400"
-              }`}
-            />
-
-            <span className="whitespace-nowrap text-sm font-medium">
-              Favorites
-            </span>
+              <span className="font-medium text-sm">
+                Favorites
+              </span>
+            </div>
 
             <button
-              type="button"
-              onClick={() => setShowFavorites((prev) => !prev)}
-              className={`relative inline-flex h-6 w-12 items-center rounded-full transition-all duration-300 ${
+              onClick={() =>
+                setShowFavorites((p) => !p)
+              }
+              className={`relative inline-flex h-6 w-12 items-center rounded-full transition ${
                 showFavorites
                   ? "bg-gradient-to-r from-indigo-600 to-blue-500"
                   : "bg-gray-300"
               }`}
             >
               <span
-                className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-all duration-300 ${
-                  showFavorites ? "translate-x-6" : "translate-x-1"
+                className={`inline-block h-5 w-5 rounded-full bg-white shadow transition ${
+                  showFavorites
+                    ? "translate-x-6"
+                    : "translate-x-1"
                 }`}
               />
             </button>
           </div>
         </div>
 
-        {/* Bottom Controls */}
+        {/* Bottom */}
 
-        <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2">
-              <Grid3X3 size={16} className="text-indigo-600" />
+        <div className="mt-5 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2">
+              <Grid3X3
+                size={16}
+                className="text-indigo-600"
+              />
 
               <span className="text-sm font-medium">
                 Showing{" "}
-                <span className="font-bold">{filteredProducts.length}</span>{" "}
+                <strong>
+                  {filteredProducts.length}
+                </strong>{" "}
                 Products
               </span>
             </div>
+
             <ActiveFilters
               search={search}
               category={category}
               showFavorites={showFavorites}
               clearSearch={() => setSearch("")}
-              clearCategory={() => setCategory("All")}
-              clearFavorites={() => setShowFavorites(false)}
+              clearCategory={() =>
+                setCategory("All")
+              }
+              clearFavorites={() =>
+                setShowFavorites(false)
+              }
             />
+
             {hasFilters && (
-              <div className="flex justify-end">
-                <ResetFiltersButton
-                  onClick={() => {
-                    setSearch("");
-                    setCategory("All");
-                    setShowFavorites(false);
-                    setSortBy("newest");
-                    setCurrentPage(1);
-                  }}
-                />
-              </div>
+              <ResetFiltersButton
+                onClick={() => {
+                  setSearch("");
+                  setCategory("All");
+                  setShowFavorites(false);
+                  setSortBy("newest");
+                }}
+              />
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-white">Sort by</span>
+          <div className="flex w-full items-center justify-between gap-3 xl:w-auto xl:justify-end">
+            <span className="text-sm font-medium text-white">
+              Sort by
+            </span>
 
-            <SortDropdown value={sortBy} onChange={setSortBy} />
+            <div className="w-full max-w-xs xl:w-auto">
+              <SortDropdown
+                value={sortBy}
+                onChange={setSortBy}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {filteredProducts.length > 0 ? (
+      {filteredProducts.length ? (
         <>
-          <div className="relative z-0">
-            {loading ? (
-              <SkeletonGrid />
-            ) : (
-              <ProductGrid products={paginatedProducts} />
-            )}
-          </div>
+          {loading ? (
+            <SkeletonGrid />
+          ) : (
+            <ProductGrid
+              products={paginatedProducts}
+            />
+          )}
 
           <Pagination
             currentPage={currentPage}
@@ -250,6 +292,7 @@ export default function Dashboard({ products }: DashboardProps) {
       ) : (
         <EmptyState />
       )}
+
       <ScrollToTop />
     </>
   );

@@ -10,7 +10,6 @@ interface Props {
 }
 
 export default function ProductCard({ product }: Props) {
-
   const reviewCount = (product.id * 137).toLocaleString();
 
   // Calculate original price from discount percentage
@@ -20,10 +19,7 @@ export default function ProductCard({ product }: Props) {
   ).toFixed(2);
 
   return (
-    <Link
-      href={`/product/${product.id}`}
-      className="group h-full"
-    >
+    <Link href={`/product/${product.id}`} className="group h-full">
       <article
         className="
           flex
@@ -75,47 +71,54 @@ export default function ProductCard({ product }: Props) {
           </span>
 
           {/* Title */}
+          {/* Desktop */}
           <h2
             className="
-              truncate
-              text-xl
-              font-bold
-              text-gray-900
-              transition-colors
-              group-hover:text-indigo-600
-            "
+    hidden
+    md:block
+    truncate
+    text-xl
+    font-bold
+    text-gray-900
+    transition-colors
+    group-hover:text-indigo-600
+  "
             title={product.title}
           >
             {product.title}
           </h2>
 
+          {/* Mobile */}
+          <h2
+            className="
+    block
+    md:hidden
+    text-lg
+    font-bold
+    leading-6
+    text-gray-900
+    transition-colors
+    group-hover:text-indigo-600
+  "
+          >
+            {product.title}
+          </h2>
+
           {/* Brand */}
-          <p className="mb-4 mt-1 text-base text-gray-500">
-            {product.brand}
-          </p>
+          <p className="mb-4 mt-1 text-base text-gray-500">{product.brand}</p>
 
           {/* Rating & Stock */}
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2 rounded-full bg-yellow-50 px-3 py-2">
-              <Star
-                size={15}
-                className="fill-yellow-500 text-yellow-500"
-              />
+              <Star size={15} className="fill-yellow-500 text-yellow-500" />
 
-              <span className="font-medium">
-                {product.rating.toFixed(1)}
-              </span>
+              <span className="font-medium">{product.rating.toFixed(1)}</span>
 
-              <span className="text-xs text-gray-500">
-                ({reviewCount})
-              </span>
+              <span className="text-xs text-gray-500">({reviewCount})</span>
             </div>
 
             <div className="flex items-center gap-2 rounded-full bg-green-50 px-3 py-2">
-              <Package
-                size={15}
-                className="text-green-600"
-              />
+              <Package size={15} className="text-green-600" />
 
               <span className="text-sm font-medium text-green-700">
                 {product.stock} left

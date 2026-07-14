@@ -22,7 +22,7 @@ export default function ScrollToTop() {
           behavior: "smooth",
         })
       }
-      className={`fixed bottom-8 right-8 z-50 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600 p-4 text-white shadow-xl transition-all duration-300 ${
+      className={`hidden md:block fixed bottom-8 right-8 z-50 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600 p-4 text-white shadow-xl transition-all duration-300 ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-10 opacity-0"
