@@ -183,29 +183,6 @@ export default function ProductDetails({
 
           </div>
 
-          {/* CTA */}
-
-          <button
-            className="
-            mt-10
-            w-full
-            rounded-2xl
-            bg-gradient-to-r
-            from-indigo-600
-            to-blue-600
-            py-5
-            text-lg
-            font-semibold
-            text-white
-            shadow-xl
-            transition-all
-            duration-300
-            hover:scale-[1.02]
-          "
-          >
-            Buy Now
-          </button>
-
         </div>
 
       </div>

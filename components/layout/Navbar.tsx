@@ -1,10 +1,9 @@
 "use client";
 
-import { Heart, ShoppingBag } from "lucide-react";
-import { useFavorites } from "@/context/FavoriteContext";
+import { ShoppingBag } from "lucide-react";
+import Image from "next/image";
 
 export default function Navbar() {
-  const { favorites } = useFavorites();
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200/60 bg-white/80 backdrop-blur-xl">
@@ -27,6 +26,13 @@ export default function Navbar() {
           </div>
 
         </div>
+        <Image
+              src="https://i.pravatar.cc/100?img=12"
+              alt="Profile"
+              width={44}
+              height={44}
+              className="rounded-full"
+            />
 
       </div>
     </header>

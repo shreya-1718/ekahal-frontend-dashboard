@@ -13,6 +13,11 @@ import ProductGrid from "./product/ProductGrid";
 import EmptyState from "./common/EmptyState";
 import Pagination from "./common/Pagination";
 import useScrolled from "@/hooks/useScrolled";
+import SkeletonGrid from "./common/SkeletonGrid";
+import ActiveFilters from "./common/ActiveFilters";
+import ResetFiltersButton from "./common/ResetFiltersButton";
+import StatsCards from "./common/StatsCards";
+import ScrollToTop from "./common/ScrollToTop";
 
 interface DashboardProps {
   products: Product[];
@@ -26,7 +31,10 @@ export default function Dashboard({ products }: DashboardProps) {
   const [showFavorites, setShowFavorites] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [currentPage, setCurrentPage] = useState(1);
-    const scrolled = useScrolled();
+  const [loading, setLoading] = useState(true);
+  const hasFilters = search || category !== "All" || showFavorites;
+
+  const scrolled = useScrolled();
   const { favorites } = useFavorites();
 
   const categories = useMemo(() => {
@@ -92,11 +100,26 @@ export default function Dashboard({ products }: DashboardProps) {
     (currentPage - 1) * PRODUCTS_PER_PAGE,
     currentPage * PRODUCTS_PER_PAGE,
   );
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
+      <StatsCards
+        totalProducts={products.length}
+        favoriteCount={favorites.length}
+        totalCategories={categories.length - 1}
+        averageRating={
+          products.reduce((sum, p) => sum + p.rating, 0) / products.length
+        }
+      />
       <div
-  className={`
+        className={`
     sticky
     top-20
     z-40
@@ -108,10 +131,10 @@ export default function Dashboard({ products }: DashboardProps) {
     ${
       scrolled
         ? "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 backdrop-blur-2xl shadow-2xl border border-gray-200 py-4 px-6"
-        : "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 backdrop-blur-xl shadow-xl border border-white/50 p-6"
+        : "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 backdrop-blur-xl shadow-xl border border-white/50 p-4"
     }
   `}
->
+      >
         {/* Top Controls */}
 
         <div className="grid gap-5 lg:grid-cols-[1fr_250px_auto]">
@@ -157,15 +180,38 @@ export default function Dashboard({ products }: DashboardProps) {
 
         {/* Bottom Controls */}
 
-        <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2">
-            <Grid3X3 size={16} className="text-indigo-600" />
+        <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2">
+              <Grid3X3 size={16} className="text-indigo-600" />
 
-            <span className="text-sm font-medium">
-              Showing{" "}
-              <span className="font-bold">{filteredProducts.length}</span>{" "}
-              Products
-            </span>
+              <span className="text-sm font-medium">
+                Showing{" "}
+                <span className="font-bold">{filteredProducts.length}</span>{" "}
+                Products
+              </span>
+            </div>
+            <ActiveFilters
+              search={search}
+              category={category}
+              showFavorites={showFavorites}
+              clearSearch={() => setSearch("")}
+              clearCategory={() => setCategory("All")}
+              clearFavorites={() => setShowFavorites(false)}
+            />
+            {hasFilters && (
+              <div className="flex justify-end">
+                <ResetFiltersButton
+                  onClick={() => {
+                    setSearch("");
+                    setCategory("All");
+                    setShowFavorites(false);
+                    setSortBy("newest");
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -179,7 +225,11 @@ export default function Dashboard({ products }: DashboardProps) {
       {filteredProducts.length > 0 ? (
         <>
           <div className="relative z-0">
-            <ProductGrid products={paginatedProducts} />
+            {loading ? (
+              <SkeletonGrid />
+            ) : (
+              <ProductGrid products={paginatedProducts} />
+            )}
           </div>
 
           <Pagination
@@ -200,6 +250,7 @@ export default function Dashboard({ products }: DashboardProps) {
       ) : (
         <EmptyState />
       )}
+      <ScrollToTop />
     </>
   );
 }
