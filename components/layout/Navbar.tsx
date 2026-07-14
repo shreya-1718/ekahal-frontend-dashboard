@@ -1,16 +1,12 @@
 "use client";
 
-import { ShoppingBag } from "lucide-react";
-import Image from "next/image";
+import { ShoppingBag, User } from "lucide-react";
 
 export default function Navbar() {
-
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200/60 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-[1500px] items-center justify-between px-8">
-
         <div className="flex items-center gap-4">
-
           <div className="rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-500 p-4 text-white shadow-lg shadow-blue-300/40">
             <ShoppingBag size={22} />
           </div>
@@ -24,16 +20,30 @@ export default function Navbar() {
               Discover products from different categories
             </p>
           </div>
-
         </div>
-        <Image
-              src="https://i.pravatar.cc/100?img=12"
-              alt="Profile"
-              width={44}
-              height={44}
-              className="rounded-full"
-            />
-
+        <button
+          className="
+    flex
+    h-12
+    w-12
+    items-center
+    justify-center
+    rounded-full
+    border
+    border-gray-200
+    bg-gradient-to-br
+    from-indigo-50
+    to-blue-50
+    shadow-sm
+    transition-all
+    duration-300
+    hover:scale-105
+    hover:border-indigo-300
+    hover:shadow-lg
+  "
+        >
+          <User size={22} className="text-indigo-600" strokeWidth={2.2} />
+        </button>
       </div>
     </header>
   );
